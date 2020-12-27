@@ -11,17 +11,19 @@ Ext.application({
 			],
 			data: data,
 			listeners: {
-				select: onSelect
-    	}
+				select: function (sender, dataObj) {
+					console.log('HTMLTableRow rowIndex:', sender.rowIndex);
+					console.log(sender);  // tr element
+					alert(
+						'Person: '+dataObj.name+'\n'+
+						'Email:  '+dataObj.email+'\n'+
+						'Phone:  '+dataObj.phone2
+					);
+				}
+    		}
 		});
 	}
 });
-
-function onSelect(sender, record) {
-	var r = record[0].data;
-	var text = r.name+' - '+r.email+' - '+r.phone;
-	alert(text);
-};
 
 var data = [
 	{ name: 'Lisa', email: 'lisa@simpsons.com', phone: '555-111-1224' },
