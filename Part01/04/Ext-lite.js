@@ -4,43 +4,10 @@ Ext.application = function(item) {
 };
 Ext.create = function(item) {
 	var createditem = {};
+	const componentBuilder = ComponentBuilder();
 	switch(item.xtype) {
 	case "grid":
-		var grid = document.createElement("div");
-		grid.setAttribute("id", "ext-grid1");
-		grid.setAttribute("class", "x-grid");
-		var title = document.createElement("div");
-		title.setAttribute("class", "gridTitle");
-		title.innerHTML = item.title;
-		var table = document.createElement("table");
-		table.setAttribute("class", "blueTable");
-		var header = table.createTHead();
-		//var header = document.getElementById("ext-table1").tHead;
-		var row = header.insertRow(0);   
-		for (i=0;i<item.columns.length;i++) {
-			th = document.createElement('th');
-			th.innerHTML = item.columns[i].text;
-			row.appendChild(th);
-		}
-		var body = table.createTBody();
-		//var body = document.getElementById("ext-table1").tBodies[0];
-		for (var i=0;i<item.data.length;i++) {
-			var row = body.insertRow(i);
-			var o = {};
-			for(var prop in item.data[i]) {
-				o[prop] = item.data[i][prop]
-				td = document.createElement('td');
-				td.innerHTML = item.data[i][prop];
-				row.appendChild(td);
-			}
-			var record=[];
-			record[0] = {};
-			record[0].data = o;
-			row.onclick = function() {return item.listeners.select(row,record)};  
-		};
-		grid.appendChild(title);
-		grid.appendChild(table);
-		createditem = grid;
+		createditem = componentBuilder.buildExtGrid(item);
 		break;
 	default:
 		break;
@@ -48,6 +15,50 @@ Ext.create = function(item) {
 	return createditem;
 };
 
+function ComponentBuilder() {
+	return {
+		buildExtGrid: function(item) {
+			var grid = document.createElement("div");
+			grid.setAttribute("id", "ext-grid1");
+			grid.setAttribute("class", "x-grid");
+			var title = document.createElement("div");
+			title.setAttribute("class", "gridTitle");
+			title.innerHTML = item.title;
+			var table = document.createElement("table");
+			table.setAttribute("class", "blueTable");
+			var header = table.createTHead();
+			var htmltableHeaderRow = header.insertRow(0);   
+			for (i=0;i<item.columns.length;i++) {
+				th = document.createElement('th');
+				th.innerHTML = item.columns[i].text;
+				htmltableHeaderRow.appendChild(th);
+			}
+			var body = table.createTBody();
+			const addGridRow = function(rowidx) {
+				const htmltableRow = body.insertRow(i);
+				const rowObj = {};
+				for (colIdx=0; colIdx<item.columns.length; colIdx++) {
+					prop = item.columns[colIdx].dataIndex;
+					const value = item.data[rowidx][prop];
+					rowObj[prop] = value;
+					td = document.createElement('td');
+					td.innerHTML = value;
+					htmltableRow.appendChild(td);
+				}
+				// var record=[]; record[0] = {};  record[0].data = o;
+				htmltableRow.onclick = function() {
+					return item.listeners.select(htmltableRow,rowObj)
+				};  
+			};
+			for (var i=0;i<item.data.length;i++) {
+				addGridRow(i);
+			};
+			grid.appendChild(title);
+			grid.appendChild(table);
+			return grid;
+		}
+	}	
+}
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
