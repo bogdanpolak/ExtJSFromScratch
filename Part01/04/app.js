@@ -2,7 +2,7 @@ Ext.application({
 	launch: function () {
 		Ext.Viewport.add({
 			xtype: 'grid',
-			title: 'Users',
+			title: 'People',
 
 			columns: [
 				{text: 'Name', width: 100, dataIndex: 'name'},
