@@ -1,4 +1,22 @@
 function GetData() {
+    function _calculateAge(birthday) {
+        var ageDifMs = Date.now() - birthday.getTime();
+        var ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    };
+
+    const arr = GetPepopleArray();
+    arr.forEach( o => {
+        const birth = new Date(o.birthDate);
+        o.birthYear = birth.getFullYear();
+        o.age = _calculateAge(birth);
+    });
+    
+    arr.sort((a, b) => new Date(a.birthDate)-new Date(b.birthDate));
+    return arr;
+}
+
+function GetPepopleArray() {
 	return [{
 		"name": "Addison Berger",
 		"birthDate": "1986-01-28",
