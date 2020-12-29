@@ -9,6 +9,9 @@ Ext.create = function(item) {
 	case "grid":
 		createditem = componentBuilder.buildDataGrid(item);
 		break;
+	case "multiselect":
+		createditem = componentBuilder.buildMultiSelect(item);
+		break;
 	default:
 		break;
 	}
@@ -84,7 +87,10 @@ function ComponentBuilder() {
 					addGridRow(i);
 				};
 			}
-		}
+		},
+		buildMultiSelect: function(item) {
+			return _nn("div","multiselect1","multiselect-div","MULTI SELECT");
+		} 
 	}	
 }
 
@@ -99,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		Ext.Viewport.appendChild(Ext.create(item));
 	};
 	Ext.application.launch()
-	//launch();
 });
 
 function addRowHandlers(table) {
