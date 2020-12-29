@@ -7,7 +7,10 @@ Ext.create = function(item) {
 	const componentBuilder = ComponentBuilder();
 	switch(item.xtype) {
 	case "grid":
-		createditem = componentBuilder.buildExtGrid(item);
+		createditem = componentBuilder.buildDataGrid(item);
+		break;
+	case "multiselect":
+		createditem = componentBuilder.buildMultiSelect(item);
 		break;
 	default:
 		break;
@@ -15,48 +18,79 @@ Ext.create = function(item) {
 	return createditem;
 };
 
+function _nn(tagName, id, className, child) {
+	var newNode = document.createElement(tagName);
+	if (id) {
+		newNode.id = id;
+	}
+	if (className) {
+		newNode.classList.add(className);
+	}
+	if (child && typeof child === "object" && child instanceof Array) {
+		child.forEach(item => {
+			if (item && typeof item === "string") 
+				newNode.innerHTML = item;
+			if (item && typeof item === "object" && item instanceof HTMLElement) 
+				newNode.appendChild(item);
+		});
+	}
+	if (child && typeof child === "string") {
+		newNode.innerHTML = child;
+	}
+	if (child && typeof child === "object" && child instanceof HTMLElement) {
+		newNode.appendChild(child);
+	}
+	return newNode;
+}
+
 function ComponentBuilder() {
+		
 	return {
-		buildExtGrid: function(item) {
-			var grid = document.createElement("div");
-			grid.setAttribute("id", "data-grid1");
-			grid.setAttribute("class", "db-grid");
-			var title = document.createElement("div");
-			title.setAttribute("class", "gridTitle");
-			title.innerHTML = item.title;
-			var table = document.createElement("table");
-			table.setAttribute("class", "dataTable");
-			var header = table.createTHead();
-			var htmltableHeaderRow = header.insertRow(0);   
-			for (i=0;i<item.columns.length;i++) {
-				th = document.createElement('th');
-				th.innerHTML = item.columns[i].text;
-				htmltableHeaderRow.appendChild(th);
-			}
-			var body = table.createTBody();
-			const addGridRow = function(rowidx) {
-				const htmltableRow = body.insertRow(i);
-				const rowObj = {};
-				for (colIdx=0; colIdx<item.columns.length; colIdx++) {
-					prop = item.columns[colIdx].dataIndex;
-					const value = item.data[rowidx][prop];
-					rowObj[prop] = value;
-					td = document.createElement('td');
-					td.innerHTML = value;
-					htmltableRow.appendChild(td);
-				}
-				// var record=[]; record[0] = {};  record[0].data = o;
-				htmltableRow.onclick = function() {
-					return item.listeners.select(htmltableRow,rowObj)
-				};  
-			};
-			for (var i=0;i<item.data.length;i++) {
-				addGridRow(i);
-			};
-			grid.appendChild(title);
-			grid.appendChild(table);
+		buildDataGrid: function(item) {
+			const table = _nn("table","","datagrid-table");
+			buildDataTableHeader(table);
+			buildDataTableBody(table);
+			const grid = _nn("div","data-grid1","datagrid-div",[
+				_nn("div","","gridTitle",item.title),
+				table
+			]);
 			return grid;
-		}
+
+			function buildDataTableHeader(table){
+				var header = table.createTHead();
+				var htmltableHeaderRow = header.insertRow(0);   
+				for (i=0;i<item.columns.length;i++) {
+					th = document.createElement('th');
+					th.innerHTML = item.columns[i].text;
+					htmltableHeaderRow.appendChild(th);
+				}
+			}
+			function buildDataTableBody(table){
+				const body = table.createTBody();
+				const addGridRow = function(rowidx) {
+					const htmltableRow = body.insertRow(i);
+					const rowObj = {};
+					for (colIdx=0; colIdx<item.columns.length; colIdx++) {
+						prop = item.columns[colIdx].dataIndex;
+						const value = item.data[rowidx][prop];
+						rowObj[prop] = value;
+						td = document.createElement('td');
+						td.innerHTML = value;
+						htmltableRow.appendChild(td);
+					}
+					// var record=[]; record[0] = {};  record[0].data = o;
+					htmltableRow.onclick = function() {
+						return item.listeners.select(htmltableRow,rowObj)
+					};  
+				};
+				for (var i=0;i<item.data.length;i++) {
+					addGridRow(i);
+				};
+			}
+		},
+		buildMultiSelect: function(item) {
+			return _nn("div","multiselect1","multiselect-div","MULTI SELECT");
+		} 
 	}	
 }
 
@@ -71,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		Ext.Viewport.appendChild(Ext.create(item));
 	};
 	Ext.application.launch()
-	//launch();
 });
 
 function addRowHandlers(table) {

@@ -1,9 +1,12 @@
 Ext.application({
 	launch: function () {
 		Ext.Viewport.add({
+			xtype: 'multiselect',
+			data: GetStateDictionary()
+		});
+		Ext.Viewport.add({
 			xtype: 'grid',
 			title: 'People',
-
 			columns: [
 				{text: 'Name', width: 100, dataIndex: 'name'},
 				{text: 'Birth Date', width: 60, dataIndex: 'birthDate'},
@@ -13,7 +16,7 @@ Ext.application({
 				{text: 'Phone Number', width: 200, dataIndex: 'phone'},
 				{text: 'State', width: 40, dataIndex: 'state'}
 			],
-			data: GetData(),
+			data: GetTableData(),
 			listeners: {
 				select: function (sender, dataObj) {
 					console.log('HTMLTableRow rowIndex:', sender.rowIndex);
