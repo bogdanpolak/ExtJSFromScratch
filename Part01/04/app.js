@@ -28,3 +28,11 @@ Ext.application({
 		});
 	}
 });
+
+document.addEventListener("DOMContentLoaded", function(event) {
+	new SlimSelect({
+		// select: '#slim-multiple'
+		select: document.querySelector('#slim-multiple')
+	});
+});
+
