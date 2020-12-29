@@ -19,13 +19,13 @@ function ComponentBuilder() {
 	return {
 		buildExtGrid: function(item) {
 			var grid = document.createElement("div");
-			grid.setAttribute("id", "ext-grid1");
-			grid.setAttribute("class", "x-grid");
+			grid.setAttribute("id", "data-grid1");
+			grid.setAttribute("class", "db-grid");
 			var title = document.createElement("div");
 			title.setAttribute("class", "gridTitle");
 			title.innerHTML = item.title;
 			var table = document.createElement("table");
-			table.setAttribute("class", "blueTable");
+			table.setAttribute("class", "dataTable");
 			var header = table.createTHead();
 			var htmltableHeaderRow = header.insertRow(0);   
 			for (i=0;i<item.columns.length;i++) {
