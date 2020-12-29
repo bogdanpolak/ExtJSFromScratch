@@ -7,7 +7,7 @@ Ext.create = function(item) {
 	const componentBuilder = ComponentBuilder();
 	switch(item.xtype) {
 	case "grid":
-		createditem = componentBuilder.buildExtGrid(item);
+		createditem = componentBuilder.buildDataGrid(item);
 		break;
 	default:
 		break;
@@ -15,26 +15,42 @@ Ext.create = function(item) {
 	return createditem;
 };
 
+function _nn(tagName, id, className, child) {
+	var newNode = document.createElement(tagName);
+	if (id) {
+		newNode.id = id;
+	}
+	if (className) {
+		newNode.classList.add(className);
+	}
+	if (child && typeof child === "object" && child instanceof Array) {
+		child.forEach(item => {
+			if (item && typeof item === "string") 
+				newNode.innerHTML = item;
+			if (item && typeof item === "object" && item instanceof HTMLElement) 
+				newNode.appendChild(item);
+		});
+	}
+	if (child && typeof child === "string") {
+		newNode.innerHTML = child;
+	}
+	if (child && typeof child === "object" && child instanceof HTMLElement) {
+		newNode.appendChild(child);
+	}
+	return newNode;
+}
+
 function ComponentBuilder() {
-	
+		
 	return {
-		buildExtGrid: function(item) {
-
-			var grid = document.createElement("div");
-			grid.setAttribute("id", "data-grid1");
-			grid.setAttribute("class", "datagrid-div");
-
-			var title = document.createElement("div");
-			title.setAttribute("class", "gridTitle");
-			title.innerHTML = item.title;
-			grid.appendChild(title);
-
-			var table = document.createElement("table");
-			table.setAttribute("class", "datagrid-table");
-			grid.appendChild(table);
-
+		buildDataGrid: function(item) {
+			const table = _nn("table","","datagrid-table");
 			buildDataTableHeader(table);
 			buildDataTableBody(table);
+			const grid = _nn("div","data-grid1","datagrid-div",[
+				_nn("div","","gridTitle",item.title),
+				table
+			]);
 			return grid;
 
 			function buildDataTableHeader(table){
