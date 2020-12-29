@@ -1,22 +1,24 @@
-function GetData() {
-    function _calculateAge(birthday) {
+const Utils =  {
+    calculateAge: function (birthday) {
         var ageDifMs = Date.now() - birthday.getTime();
         var ageDate = new Date(ageDifMs);
         return Math.abs(ageDate.getUTCFullYear() - 1970);
-    };
+    }
+};
 
-    const arr = GetPepopleArray();
+function GetData() {
+    const arr = GetPepopleRawArray();
     arr.forEach( o => {
         const birth = new Date(o.birthDate);
         o.birthYear = birth.getFullYear();
-        o.age = _calculateAge(birth);
+        o.age = Utils.calculateAge(birth);
     });
-    
     arr.sort((a, b) => new Date(a.birthDate)-new Date(b.birthDate));
     return arr;
 }
 
-function GetPepopleArray() {
+
+function GetPepopleRawArray() {
 	return [{
 		"name": "Addison Berger",
 		"birthDate": "1986-01-28",
